@@ -32,6 +32,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.renderers import BaseRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 from .models import WorkEntry
 
@@ -260,66 +263,68 @@ def user_dashboard(request):
 
 
 
-@api_view(["GET"])
-@permission_classes([IsAdminUser])
-@renderer_classes([PDFRenderer])
+
+@staff_member_required
 def monthly_payroll_pdf(request):
-    print("PDF endpoint HIT")
+    month_param = request.GET.get("month")  # e.g. 2026-02
 
-    return Response({"ok": "endpoint reached"})
-
-    month_param = request.GET.get("month")
     if not month_param:
-        return Response({"error": "month is required. Example: ?month=2026-02"}, status=400)
+        return HttpResponse("Month is required. Example: ?month=2026-02", status=400)
 
     year, month = map(int, month_param.split("-"))
-    last_day = monthrange(year, month)[1]
-
     start_date = date(year, month, 1)
+    last_day = monthrange(year, month)[1]
     end_date = date(year, month, last_day)
 
-    entries = TimeEntry.objects.filter(
-        start_time__date__range=[start_date, end_date]
-    )
-
+    # Group by user and sum minutes
     totals = (
-        entries
+        TimeEntry.objects
+        .filter(start_time__date__range=(start_date, end_date), end_time__isnull=False)
         .values("user__username")
         .annotate(total_minutes=Sum("duration_minutes"))
         .order_by("user__username")
     )
 
-    from io import BytesIO
-    buffer = BytesIO()
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'inline; filename="payroll_{month_param}.pdf"'
 
-    pdf = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+    pdf = canvas.Canvas(response)
+    y = 750
 
-    y = height - 50
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, f"Company Payroll Report — {month_param}")
+    pdf.drawString(50, y, f"Jetro Web Development — Payroll for {month_param}")
     y -= 40
 
     pdf.setFont("Helvetica", 12)
 
-    for row in totals:
-        username = row["user__username"]
-        minutes = row["total_minutes"] or 0
-        hours = round(minutes / 60, 2)
+    if not totals:
+        pdf.drawString(50, y, "No work records found for this month.")
+    else:
+        for row in totals:
+            username = row["user__username"]
+            minutes = row["total_minutes"] or 0
 
-        pdf.drawString(50, y, f"{username} — {hours} hours")
-        y -= 25
-        if y < 50:
-            pdf.showPage()
-            y = height - 50
+            hours = minutes // 60
+            mins = minutes % 60
+
+            pdf.drawString(50, y, f"{username}    {hours}h {mins}m")
+            y -= 25
+
+            if y < 50:
+                pdf.showPage()
+                y = 750
 
     pdf.save()
-    buffer.seek(0)
+    return response
 
-    return Response(
-        buffer.read(),
-        headers={
-            "Content-Disposition": f'inline; filename="payroll_{month_param}.pdf"'
-        },
-        content_type="application/pdf"
-    )
+# At the bottom of accounts/views.py
+@staff_member_required
+def test_pdf(request):
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'inline; filename="test.pdf"'
+
+    pdf = canvas.Canvas(response)
+    pdf.drawString(100, 750, "Hello PDF!")
+    pdf.save()
+
+    return response
