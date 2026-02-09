@@ -11,13 +11,42 @@ from django.utils import timezone
 from datetime import date
 from django.utils.timezone import now
 from rest_framework.decorators import api_view, permission_classes
-from .models import WorkEntry
 from calendar import monthrange
 from django.db.models import Q
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAdminUser
+from .permissions import IsUser
+from django.contrib.auth import get_user_model
+from reportlab.lib.pagesizes import A4
+from django.http import HttpResponse
+from django.db.models import Sum
+from datetime import date
 from calendar import monthrange
+from django.http import HttpResponse
+from django.db.models import Sum
+from django.contrib.auth import get_user_model
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from rest_framework.permissions import IsAdminUser
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.renderers import BaseRenderer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
+
+from .models import WorkEntry
+
+class PDFRenderer(BaseRenderer):
+    media_type = "application/pdf"
+    format = "pdf"
+    charset = None
+    render_style = "binary"
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return data
 
 
 
+User = get_user_model()
 
 
 
@@ -171,57 +200,126 @@ def monthly_summary(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def monthly_dashboard(request):
-    user = request.user
+@permission_classes([IsAdminUser])
+def admin_dashboard(request):
     today = date.today()
 
-    # Get year and month from query params, default to current
-    year = int(request.GET.get("year", today.year))
-    month = int(request.GET.get("month", today.month))
+    users = User.objects.all()
 
-    # Determine the first and last day of the month
-    start_date = date(year, month, 1)
-    last_day = monthrange(year, month)[1]
-    end_date = date(year, month, last_day)
+    active_sessions = TimeEntry.objects.filter(end_time__isnull=True)
 
-    # Fetch all entries in that month
-    entries = TimeEntry.objects.filter(
-        user=user,
-        start_time__date__range=(start_date, end_date)
-    ).order_by("start_time")
+    active_users = []
+    for e in active_sessions:
+        active_users.append({
+            "username": e.user.username,
+            "started_at": e.start_time,
+            "running_minutes": int((timezone.now() - e.start_time).total_seconds() / 60)
+        })
 
-    total_minutes = 0
-    days_set = set()
-    running = False
-    sessions = []
+    user_summaries = []
 
-    for e in entries:
-        days_set.add(e.start_time.date())
+    for user in users:
+        entries = TimeEntry.objects.filter(
+            user=user,
+            start_time__date=today
+        )
 
-        if e.end_time:
-            minutes = e.duration_minutes
-            session_running = False
-        else:
-            # calculate running session duration on the fly
-            minutes = int((timezone.now() - e.start_time).total_seconds() / 60)
-            session_running = True
-            running = True
+        total_minutes = 0
+        running = False
 
-        total_minutes += minutes
-        sessions.append({
-            "start": e.start_time.strftime("%H:%M:%S"),
-            "end": e.end_time.strftime("%H:%M:%S") if e.end_time else None,
-            "minutes": minutes,
-            "running": session_running
+        for e in entries:
+            if e.end_time:
+                total_minutes += e.duration_minutes
+            else:
+                running = True
+                total_minutes += int((timezone.now() - e.start_time).total_seconds() / 60)
+
+        user_summaries.append({
+            "username": user.username,
+            "today_minutes": total_minutes,
+            "today_hours": f"{total_minutes//60}h {total_minutes%60}m",
+            "is_running": running
         })
 
     return Response({
-        "month": f"{year}-{month:02d}",
-        "days_worked": len(days_set),
-        "total_minutes": total_minutes,
-        "total_hours": f"{total_minutes//60}h {total_minutes%60}m",
-        "running": running,
-        "sessions": sessions
+        "date": str(today),
+        "active_sessions": active_users,
+        "users": user_summaries
     })
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsUser])
+def user_dashboard(request):
+    return Response({
+        "message": "Welcome user",
+        "username": request.user.username
+    })
+
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+@renderer_classes([PDFRenderer])
+def monthly_payroll_pdf(request):
+    print("PDF endpoint HIT")
+
+    return Response({"ok": "endpoint reached"})
+
+    month_param = request.GET.get("month")
+    if not month_param:
+        return Response({"error": "month is required. Example: ?month=2026-02"}, status=400)
+
+    year, month = map(int, month_param.split("-"))
+    last_day = monthrange(year, month)[1]
+
+    start_date = date(year, month, 1)
+    end_date = date(year, month, last_day)
+
+    entries = TimeEntry.objects.filter(
+        start_time__date__range=[start_date, end_date]
+    )
+
+    totals = (
+        entries
+        .values("user__username")
+        .annotate(total_minutes=Sum("duration_minutes"))
+        .order_by("user__username")
+    )
+
+    from io import BytesIO
+    buffer = BytesIO()
+
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, y, f"Company Payroll Report — {month_param}")
+    y -= 40
+
+    pdf.setFont("Helvetica", 12)
+
+    for row in totals:
+        username = row["user__username"]
+        minutes = row["total_minutes"] or 0
+        hours = round(minutes / 60, 2)
+
+        pdf.drawString(50, y, f"{username} — {hours} hours")
+        y -= 25
+        if y < 50:
+            pdf.showPage()
+            y = height - 50
+
+    pdf.save()
+    buffer.seek(0)
+
+    return Response(
+        buffer.read(),
+        headers={
+            "Content-Disposition": f'inline; filename="payroll_{month_param}.pdf"'
+        },
+        content_type="application/pdf"
+    )
