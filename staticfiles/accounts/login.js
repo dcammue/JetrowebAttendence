@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8000/api/accounts";
+const API = "https://jetrowebattendence.onrender.com/api/accounts";
 
 // --- LOGIN FORM ---
 document.getElementById("loginForm").addEventListener("submit", function(e){
@@ -7,7 +7,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    fetch(`${API}/login/`, {
+    fetch("https://jetrowebattendence.onrender.com/api/accounts/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -21,7 +21,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
         localStorage.setItem("token", data.token);
 
         if (data.is_admin) {
-            window.location.href = "../../templates/accounts/admin.html";
+            window.location.href = "https://jetrowebattendence.onrender.com/templates/accounts/admin.html";
         } else {
             window.location.href = "../../templates/accounts/user.html";
         }
@@ -59,7 +59,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
         return;
     }
 
-    fetch(`${API}/register/`, {
+    fetch("https://jetrowebattendence.onrender.com/api/accounts/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, email })

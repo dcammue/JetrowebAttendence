@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8000/api/accounts";
+const API = "https://jetrowebattendence.onrender.com/api/accounts";
 const token = localStorage.getItem("token");
 
 // Redirect if not logged in
@@ -105,7 +105,7 @@ document.getElementById("deleteAccountBtn").onclick = () => {
         return;
     }
 
-    fetch("http://127.0.0.1:8000/api/accounts/delete-account/", {
+    fetch("https://jetrowebattendence.onrender.com/api/accounts/delete-account/", {
         method: "DELETE",
         headers: {
             "Authorization": "Token " + localStorage.getItem("token")

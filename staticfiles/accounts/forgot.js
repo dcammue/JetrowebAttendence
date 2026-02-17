@@ -7,7 +7,7 @@ document.getElementById("forgotForm").addEventListener("submit", function(e){
 
     console.log("Sending reset for:", email);
 
-    fetch("http://127.0.0.1:8000/api/accounts/forgot-password/", {
+    fetch("https://jetrowebattendence.onrender.com/api/accounts/forgot-password/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

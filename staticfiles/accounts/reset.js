@@ -15,7 +15,7 @@ document.getElementById("resetForm").addEventListener("submit", function(e) {
         return;
     }
 
-    fetch("http://127.0.0.1:8000/api/accounts/reset-password/", {
+    fetch("https://jetrowebattendence.onrender.com/api/accounts/reset-password/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -32,7 +32,7 @@ document.getElementById("resetForm").addEventListener("submit", function(e) {
 
             // Redirect to Django login page after 2 seconds
             setTimeout(() => {
-                window.location.href = "http://127.0.0.1:8000/api/accounts/";
+                window.location.href = "https://jetrowebattendence.onrender.com/api/accounts/";
             }, 2000);
 
         } else if (data.error) {
