@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../../static/accounts/style.css">
+</head>
+<body>
+<h2 id="alluserD">Admin Dashboard</h2>
+<h3 id="date"></h3>
+<h1>Jetro Web Development Incoorperated(JWD'INC)</h1>
+<h4>Jetro Web Work Sessions Tracker</h4>
+
+<h2 id="todayd">Today's Dashboard</h2>
+<button id="startBtn">Start</button>
+<button id="stopBtn">Stop</button>
+
+<div id="status" style="color: green;"></div>
+<h4 id="totalTime"></h4>
+<table border="1" cellpadding="6" id="todaytable">
+    <thead>
+        <tr id="tableth">
+            <th>Start</th>
+            <th>End</th>
+            <th>Minutes</th>
+            <th>Running</th>
+        </tr>
+    </thead>
+    <tbody id="sessions"></tbody>
+</table>
+
+<h2 id="AllAU" style="color: black;">All Active Users</h2>
+
+<table border="1" cellpadding="6" id="usersTable">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Minutes Today</th>
+            <th>Hours Today</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="users"></tbody>
+</table>
+
+<input id="month" type="month">
+<button id="payrollBtn">Download Payroll</button>
+
+<footer>Produced And Power BY Jetro Web Development' INC 
+    <br>Designed & Developed by Daniel Cammue © 2026 / ALL RIGHT RESERVED
+</footer>
+
+<script src="../../../frontend/admin.js"></script>
+</body>
+

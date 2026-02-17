@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<h2>Work Tracker</h2>
+
+<button onclick="startWork()">Start Work</button>
+<button onclick="stopWork()">Stop Work</button>
+<br><br>
+<button onclick="downloadPDF()">Download Monthly Payroll</button>
+
+<script src="app.js"></script>
+
+<script>
+function startWork(){
+    api("/work/", "POST", { action: "start" })
+        .then(r => {
+            alert("Work started");
+        })
+        .catch(err => {
+            alert("Error: " + JSON.stringify(err));
+        });
+}
+
+function stopWork(){
+    api("/work/", "POST", { action: "stop" })
+        .then(r => {
+            alert("Work stopped");
+        })
+        .catch(err => {
+            alert("Error: " + JSON.stringify(err));
+        });
+}
+
+
+
+function downloadPDF(){
+    window.open("http://127.0.0.1:8000/api/accounts/monthly_payroll_pdf/?month=2026-02");
+}
+</script>
+
+</body>
+</html>

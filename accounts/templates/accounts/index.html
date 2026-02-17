@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WorkTracker Login / Register</title>
+    <link rel="stylesheet" href="../../static/accounts/style.css">
+</head>
+<body>
+
+<div id="loginContainer">
+    <form id="loginForm">
+        <h2>Login</h2>
+        <input id="username" type="text" placeholder="Username" required>
+        <input id="password" type="password" placeholder="Password" required>
+        <button id="loginBtn" type="submit">Login</button>
+    </form>
+
+    <p id="ask">Don't have an account? <a href="#" id="showRegister">Register Now</a></p>
+    <a id="forgotBtn" href="http://127.0.0.1:8000/api/accounts/forgot-page/">
+    Forgot password?
+</a>
+
+
+    <p id="error"></p>
+</div>
+
+<div id="registerContainer" style="display:none;">
+    <form id="registerForm">
+        <h2>Create Account</h2>
+        <input id="regEmail" type="email" placeholder="Email" required>
+        <input id="regUsername" type="text" placeholder="Username" required>
+        <input id="regPassword" type="password" placeholder="Password" required>
+        <input id="regPassword2" type="password" placeholder="Confirm Password" required>
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="#" id="showLogin">Login here</a></p>
+    <p id="regError"></p>
+</div>
+
+<script src="../../static/accounts/login.js"></script>
+
+
+</body>
+</html>

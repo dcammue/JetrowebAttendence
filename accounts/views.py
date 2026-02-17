@@ -22,6 +22,7 @@ from django.http import HttpResponse
 from django.db.models import Sum
 from datetime import date
 from calendar import monthrange
+from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
@@ -34,6 +35,18 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from django.core.mail import send_mail
+from .models import PasswordReset
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.utils import timezone
+from django.shortcuts import render
 
 
 from .models import WorkEntry
@@ -77,7 +90,7 @@ class LogoutView(APIView):
         request.user.auth_token.delete()
         return Response({"message": "Logged out successfully"})
 
-
+# StartStop
 class StartStopView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -152,6 +165,7 @@ def today_dashboard(request):
         })
 
     return Response({
+        "username": request.user.username,
         "date": str(today),
         "total_minutes": total,
         "total_hours": f"{total//60}h {total%60}m",
@@ -262,6 +276,15 @@ def user_dashboard(request):
 
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def whoami(request):
+    return Response({
+        "username": request.user.username,
+        "is_staff": request.user.is_staff
+    })
+
+
 
 
 @staff_member_required
@@ -292,7 +315,7 @@ def monthly_payroll_pdf(request):
     y = 750
 
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, f"Jetro Web Development — Payroll for {month_param}")
+    pdf.drawString(50, y, f"Jetro Web Development — Attendance for {month_param}")
     y -= 40
 
     pdf.setFont("Helvetica", 12)
@@ -317,6 +340,109 @@ def monthly_payroll_pdf(request):
     pdf.save()
     return response
 
+
+# registration form
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    if not username or not password:
+        return Response({"error": "Username and password required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    email = request.data.get("email")
+
+    user = User.objects.create_user(username=username, password=password, email=email)
+    return Response({"id": user.id, "username": user.username}, status=status.HTTP_201_CREATED)
+
+
+
+
+#delete account
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user
+
+    # Delete everything owned by this user
+    user.timeentry_set.all().delete()   # or TimeEntry.objects.filter(user=user).delete()
+    user.delete()
+
+    return Response({"message": "Account deleted successfully"})
+
+
+
+# Forgot password
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def forgot_password(request):
+    email = request.data.get("username")   # coming from JS
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "No account with this email"}, status=404)
+
+    reset = PasswordReset.objects.create(user=user)
+
+    reset_link = f"http://127.0.0.1:8000/api/accounts/reset/?token={reset.token}"
+
+    send_mail(
+        "Reset your password",
+        f"Click to reset your password:\n{reset_link}",
+        "noreply@jetroweb.com",
+        [user.email],
+        fail_silently=False,
+    )
+
+    return Response({"message": "Reset link sent"})
+
+
+
+# Reset password
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password(request):
+    token = request.data.get("token")
+    password = request.data.get("password")
+
+    if not token or not password:
+        return Response({"error": "Missing token or password"}, status=400)
+
+    try:
+        reset = PasswordReset.objects.get(token=token)
+    except PasswordReset.DoesNotExist:
+        return Response({"error": "Invalid or expired token"}, status=400)
+
+    user = reset.user   # 🔐 THIS is the real owner
+
+    user.set_password(password)
+    user.save()
+
+    reset.delete()
+
+    return Response({"message": "Password reset successful"})
+
+
+
+
+# Login page 
+def login_page(request):
+    return render(request, "accounts/index.html")
+
+# Forgot password page 
+def forgot_page(request):
+    return render(request, "accounts/forgot.html")
+
+# Reset password page
+def reset_page(request):
+    return render(request, "accounts/reset.html")
+
+
 # At the bottom of accounts/views.py
 @staff_member_required
 def test_pdf(request):
@@ -328,3 +454,21 @@ def test_pdf(request):
     pdf.save()
 
     return response
+
+
+
+
+# views.py
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'username': user.username,
+            'is_staff': user.is_staff,       # ✅ important
+            'role': 'admin' if user.is_staff else 'user'  # optional
+        })
