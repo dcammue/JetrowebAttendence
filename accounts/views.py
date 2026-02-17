@@ -456,6 +456,8 @@ def test_pdf(request):
     return response
 
 
+def home(request):
+    return HttpResponse("Jetroweb Attendance API is running.")
 
 
 # views.py

@@ -16,8 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib import admin
+from django.urls import path, include
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Jetroweb Attendance API is running.")
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/accounts/', include('accounts.urls')),
+    path("", home),                 # homepage
+    path("admin/", admin.site.urls),
+    path("api/accounts/", include("accounts.urls")),
 ]
