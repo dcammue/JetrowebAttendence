@@ -21,7 +21,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
         localStorage.setItem("token", data.token);
 
         if (data.is_admin) {
-            window.location.href = "https://jetrowebattendence.onrender.com/templates/accounts/admin.html";
+            window.location.href = "admindashboard";
         } else {
             window.location.href = "dashboard";
         }
