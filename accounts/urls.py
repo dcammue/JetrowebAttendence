@@ -15,6 +15,7 @@ from .views import reset_password
 from .views import forgot_page
 from . import views
 from .views import dashboard
+from .views import admindashboard
 
 
 
@@ -37,6 +38,9 @@ urlpatterns = [
     path('reset-password/', reset_password),    # your API view for reset password
     path('forgot-page/' , forgot_page),
     path("dashboard/", dashboard, name="dashboard"),
+    path("admin-dashboard/", admindashboard),
+    
 ]
+
 
 

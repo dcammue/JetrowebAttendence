@@ -20,12 +20,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from accounts.views import home
-from accounts.views import dashboard, admindashboard
 
 urlpatterns = [
     path("", home, name="home"),                 # homepage
     path("admin/", admin.site.urls),
     path("api/accounts/", include("accounts.urls")),
-    path("admin-dashboard/", admindashboard),
-    path("dashboard/", dashboard)
 ]
