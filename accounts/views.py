@@ -458,7 +458,7 @@ def test_pdf(request):
 
 
 def home(request):
-    return render(request, "accounts/login.html")
+    return render(request, "accounts/index.html")
 
 
 

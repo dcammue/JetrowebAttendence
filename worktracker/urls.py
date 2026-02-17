@@ -22,7 +22,7 @@ from django.http import HttpResponse
 from accounts.views import home
 
 urlpatterns = [
-    path("", home),                 # homepage
+    path("", home, name="home"),                 # homepage
     path("admin/", admin.site.urls),
     path("api/accounts/", include("accounts.urls")),
 ]
