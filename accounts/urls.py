@@ -14,6 +14,9 @@ from .views import forgot_password
 from .views import reset_password
 from .views import forgot_page
 from . import views
+from .views import dashboard
+
+
 
 urlpatterns = [
     path('login/', LoginView.as_view()),
@@ -33,5 +36,7 @@ urlpatterns = [
     path('forgot-password/', forgot_password),  # your API view for forgot password
     path('reset-password/', reset_password),    # your API view for reset password
     path('forgot-page/' , forgot_page),
+    path("dashboard/", dashboard, name="dashboard"),
 ]
+
 

@@ -23,7 +23,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
         if (data.is_admin) {
             window.location.href = "https://jetrowebattendence.onrender.com/templates/accounts/admin.html";
         } else {
-            window.location.href = "../../templates/accounts/user.html";
+            window.location.href = "dashboard";
         }
     } else {
         document.getElementById("error").innerText = "Invalid login";

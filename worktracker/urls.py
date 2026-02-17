@@ -19,9 +19,7 @@ from django.urls import path, include
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-
-def home(request):
-    return HttpResponse("Jetroweb Attendance API is running.")
+from accounts.views import home
 
 urlpatterns = [
     path("", home),                 # homepage

@@ -49,6 +49,7 @@ from django.utils import timezone
 from django.shortcuts import render
 
 
+
 from .models import WorkEntry
 
 class PDFRenderer(BaseRenderer):
@@ -457,7 +458,12 @@ def test_pdf(request):
 
 
 def home(request):
-    return HttpResponse("Jetroweb Attendance API is running.")
+    return render(request, "accounts/login.html")
+
+
+
+def dashboard(request):
+    return render(request, "accounts/user.html")
 
 
 # views.py
