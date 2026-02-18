@@ -17,6 +17,18 @@ from . import views
 from .views import dashboard
 from .views import admindashboard
 
+from django.urls import path
+from django.shortcuts import render
+
+def login_page(request):
+    return render(request, "index.html")
+
+def admin_page(request):
+    return render(request, "admin.html")
+
+def user_page(request):
+    return render(request, "user.html")
+
 
 
 urlpatterns = [
@@ -39,7 +51,9 @@ urlpatterns = [
     path('forgot-page/' , forgot_page),
     path("dashboard/", dashboard, name="dashboard"),
     path("admin-dashboard/", admindashboard),
-    
+    path("", login_page),
+    path("admin/", admin_page),
+    path("user/", user_page),
 ]
 
 
