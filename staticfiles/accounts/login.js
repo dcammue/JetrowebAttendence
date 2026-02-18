@@ -21,9 +21,9 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
         localStorage.setItem("token", data.token);
 
         if (data.is_admin) {
-            window.location.href = "admin-dashboard";
+            window.location.href = "api/accounts/admin/";
         } else {
-            window.location.href = "user-dashboard";
+            window.location.href = "api/accounts/user/";
         }
     } else {
         document.getElementById("error").innerText = "Invalid login";
