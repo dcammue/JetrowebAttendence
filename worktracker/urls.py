@@ -21,6 +21,10 @@ from django.urls import path, include
 from django.http import HttpResponse
 from accounts.views import home
 
+def home(request):
+    return render(request, "accounts/index.html")
+
+
 urlpatterns = [
     path("", home, name="home"),                 # homepage
     path("admin/", admin.site.urls),
