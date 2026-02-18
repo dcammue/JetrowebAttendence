@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +30,6 @@
     </footer>
     
 
-    <script src="../../../staticfiles/accounts/user.js"></script>
-
+    <script src="{% staticfiles 'accounts/reset.js' %}"></script>
 </body>
 </html>
