@@ -460,10 +460,10 @@ def test_pdf(request):
 def home(request):
     return render(request, "accounts/index.html")
 
-def admindashboard(request):
+def admin_dashboard(request):
     return render(request, "accounts/admin.html")
 
-def dashboard(request):
+def user_dashboard(request):
     return render(request, "accounts/user.html")
 
 

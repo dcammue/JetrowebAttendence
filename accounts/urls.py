@@ -14,20 +14,10 @@ from .views import forgot_password
 from .views import reset_password
 from .views import forgot_page
 from . import views
-from .views import dashboard
-from .views import admindashboard
+from .views import user_dashboard
+from .views import admin_dashboard
 
-from django.urls import path
-from django.shortcuts import render
 
-def login_page(request):
-    return render(request, "index.html")
-
-def admin_page(request):
-    return render(request, "admin.html")
-
-def user_page(request):
-    return render(request, "user.html")
 
 
 
@@ -49,11 +39,9 @@ urlpatterns = [
     path('forgot-password/', forgot_password),  # your API view for forgot password
     path('reset-password/', reset_password),    # your API view for reset password
     path('forgot-page/' , forgot_page),
-    path("dashboard/", dashboard, name="dashboard"),
-    path("admin-dashboard/", admindashboard),
     path("", login_page),
-    path("admin/", admin_page),
-    path("user/", user_page),
+    path("admin/", admin_dashboard),
+    path("user/", user_dashboard),
 ]
 
 
