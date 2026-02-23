@@ -18,15 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
-from accounts.views import home
+from accounts.views import login_page
 
-def home(request):
-    return render(request, "accounts/index.html")
 
 
 urlpatterns = [
-    path("", home, name="home"),                 # homepage
+    path('', login_page, name='home'),
     path("admin/", admin.site.urls),
     path("api/accounts/", include("accounts.urls")),
 ]

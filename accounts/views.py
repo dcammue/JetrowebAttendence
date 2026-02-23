@@ -443,6 +443,13 @@ def forgot_page(request):
 def reset_page(request):
     return render(request, "accounts/reset.html")
 
+# admin dashboard
+def admin (request):
+    return render(request, "accounts/admin.html")
+
+#user dashboard
+def user(request):
+    return render(request, "accounts/user.html")
 
 # At the bottom of accounts/views.py
 @staff_member_required
@@ -459,12 +466,6 @@ def test_pdf(request):
 
 def home(request):
     return render(request, "accounts/index.html")
-
-def admin_dashboard(request):
-    return render(request, "accounts/admin.html")
-
-def user_dashboard(request):
-    return render(request, "accounts/user.html")
 
 
 # views.py

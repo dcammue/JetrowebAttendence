@@ -1,9 +1,9 @@
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../../../staticfiles/accounts/style.css">
+<link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 </head>
 <body>
 <h2 id="alluserD">Admin Dashboard</h2>
@@ -50,6 +50,6 @@
     <br>Designed & Developed by Daniel Cammue © 2026 / ALL RIGHT RESERVED
 </footer>
 
-<script src="{% staticfiles 'accounts/reset.js' %}"></script>
+<script src="{% static 'accounts/admin.js' %}"></script>
 </body>
 
