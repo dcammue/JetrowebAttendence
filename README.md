@@ -3,9 +3,13 @@ Jetro Web Development Attendence application
 
 ## The Jetroweb Attendance or Worker hours Tracker has successfully been completed for use!!
 
-### This application was designed to handle worker hours at Jetro Web Development and generate a monthly pdf to ensure Justic, free and fair work collaboration among Jetro members.
+### This application was designed to handle worker hours at Jetro Web Development and generate 
 
-### This application contains both User and Admin Dashboards and each dashboard has a very nice features that has been explained in the below instructions.
+### a monthly pdf to ensure Justic, free and fair work collaboration among Jetro members.
+
+### This application contains both User and Admin Dashboards and each dashboard has a 
+
+### very nice features that has been explained in the below instructions.
 
 #### the project will be hosted for internet access any moment from now, but it can be run on your local machine for tesing.
 
@@ -51,8 +55,11 @@ Jetro Web Development Attendence application
   #### You will see the server running on the port at http://127.0.0.1:8000/ Click on the URL to 
   gets you into the login page.
 
-### 6. when you get into the login page, yuo will see a registration link at the upper right coner of the page, click and register for New Account. 
-After the registration has been completed, you will be redirected to the login page for access to User Account, login with you credendials.
+### 6. when you get into the login page, yuo will see a registration link 
+
+### at the upper right coner of the page, click and register for New Account. 
+
+### After the registration has been completed, you will be redirected to the login page for access to User Account, login with you credendials.
 
 ### 7. After successfull logged in, you will be welcome to the user dashboard. In the user dashboard, you will see today's dashboard,
 
@@ -68,9 +75,13 @@ After the registration has been completed, you will be redirected to the login p
 
   credentials: Username: dcammue Password: daniel0775123
   
-  #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into application. The admin dashboard contain; today's dashboard, all user dashboard, start and stop buttons, monthly pdf generatable 
+  #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into application. 
   
-  ### session. This app is designed in a way that admin is not allow; to login into user account with admin password lesswise user, to start or stop user work session, it is free and fair, Justic for all app.
+  ### The admin dashboard contain; today's dashboard, all user dashboard, start and stop buttons, monthly pdf generatable 
+  
+  ### session. This app is designed in a way that admin is not allow; to login into user account with admin 
+  
+  ### password lesswise user, to start or stop user work session, it is free and fair, Justic for all app.
 
 
 ### 9. Feature to expect sooner or later;
