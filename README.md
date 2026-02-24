@@ -80,11 +80,11 @@ Jetro Web Development Attendence application
   
   #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into application. 
   
-  ### The admin dashboard contain; today's dashboard, all user dashboard, start and stop buttons, monthly pdf generale.
+  ### The admin dashboard contain; today's dashboard, all user dashboard, start and stop buttons, monthly pdf generate session.
 
   ### To print out the Monthly PDF, you will need to enter 2026-01 or 2026-zero follow by the month you want to print out the PDF for then click generate PDF.
   
-  ### session. This app is designed in a way that admin is not allow; to login into user account with admin 
+  ### This app is designed in a way that admin is not allow; to login into user account with admin 
   
   ### password lesswise user, to start or stop user work session, it is free and fair, Justic for all app.
 
