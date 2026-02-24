@@ -15,9 +15,12 @@ Jetro Web Development Attendence application
 
 ## How to get the project running on your local machine?
 
-### 1. Firstly get the project to you local machine by clonning it from this page.
 
-### Instructions
+
+## 1. Firstly get the project to you local machine by clonning it from this page.
+
+
+# Instructions
 
 #### Clone the project
 
@@ -27,10 +30,10 @@ Jetro Web Development Attendence application
   
   git clone https://github.com/dcammue/JetrowebAttendence.git
 
-#### 2. After the clonning has been completed, cd into the project directory
+# 2. After the clonning has been completed, cd into the project directory
   cd JetrowebAttendence
 
-### 3. Activate the virsual environment (venv)
+# 3. Activate the virsual environment (venv)
 
   python3 -m venv venv
   or
@@ -40,7 +43,7 @@ Jetro Web Development Attendence application
 
 #### You will see something like (venv) user@localhost. That's mean, your virsual environment has been activated.
 
-### 4. Install all django dependences for smooth operation of the project
+# 4. Install all django dependences for smooth operation of the project
 
   #### YOU will use pip to insatall the dependences. If pip not installed on your machine, install it using "  sudo apt install pip  "
 
@@ -48,20 +51,20 @@ Jetro Web Development Attendence application
 
   pip install -r requirement.txt
 
-### 5. After the 'requirement.txt is install successfully, run or start the server
+# 5. After the 'requirement.txt is install successfully, run or start the server
 
   python3 manage.py runserver
 
   #### You will see the server running on the port at http://127.0.0.1:8000/ Click on the URL to 
   gets you into the login page.
 
-### 6. when you get into the login page, yuo will see a registration link 
+# 6. when you get into the login page, yuo will see a registration link 
 
 ### at the upper right coner of the page, click and register for New Account. 
 
 ### After the registration has been completed, you will be redirected to the login page for access to User Account, login with you credendials.
 
-### 7. After successfull logged in, you will be welcome to the user dashboard. In the user dashboard, you will see today's dashboard,
+# 7. After successfull logged in, you will be welcome to the user dashboard. In the user dashboard, you will see today's dashboard,
 
 ### start and stop buttons that you can use to start or stop work session and your dashboard will be updates or reloads after every 30 sec,
 
@@ -71,7 +74,7 @@ Jetro Web Development Attendence application
 
 
 
-### 8. you can also access the Admin Dashboard
+# 8. you can also access the Admin Dashboard
 
   credentials: Username: dcammue Password: daniel0775123
   
@@ -84,7 +87,7 @@ Jetro Web Development Attendence application
   ### password lesswise user, to start or stop user work session, it is free and fair, Justic for all app.
 
 
-### 9. Feature to expect sooner or later;
+# 9. Feature to expect sooner or later;
 
  #### User viewing their work history, meaning you will be able to see how many hours you have spent for the past days within the current month,
  
