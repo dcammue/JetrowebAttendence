@@ -85,7 +85,7 @@ p, a{
 }
 
 #deleteAccountBtn {
-    margin-top: 26.6%;
+    margin-top: 24.6%;
     font-size: larger;
 }
 
@@ -110,7 +110,7 @@ p, a{
 #payrollBtn {
     color: orange;
     background-color: black;
-    margin-top: 1%;
+    margin-top: 3%;
     font-size: medium;
 
 }

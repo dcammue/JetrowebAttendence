@@ -70,7 +70,7 @@ function loadAdminDashboard() {
             sessionsDiv.innerHTML += `
                 <tr style="${runningStyle}">
                     <td>${s.start}</td>
-                    <td>${s.end || "Running"}</td>
+                    <td>${s.end || "—"}</td>
                     <td>${s.minutes}</td>
                     <td>${s.running ? "Running" : "Stopped"}</td>
                 </tr>

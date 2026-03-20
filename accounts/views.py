@@ -451,6 +451,9 @@ def admin (request):
 def user(request):
     return render(request, "accounts/user.html")
 
+def home(request):
+    return render(request, "accounts/index.html")
+
 # At the bottom of accounts/views.py
 @staff_member_required
 def test_pdf(request):
@@ -464,8 +467,7 @@ def test_pdf(request):
     return response
 
 
-def home(request):
-    return render(request, "accounts/index.html")
+
 
 
 # views.py

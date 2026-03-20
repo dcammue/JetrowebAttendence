@@ -115,6 +115,6 @@ document.getElementById("deleteAccountBtn").onclick = () => {
     .then(data => {
         alert(data.message);
         localStorage.removeItem("token");
-        window.location.href = "index.html";
+        window.location.href = "/api/accounts/home";
     });
 };
