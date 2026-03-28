@@ -21,6 +21,45 @@
 
     <div id="today"></div>
 
+    <h2>Login History</h2>
+
+<div>
+  <button id="history" onclick="toggleLoginHistory()">
+    Login History ▼
+  </button>
+
+  <div id="loginHistorySection" style="display: none; margin-top:10px;">
+    <table id="tablecolor" border="1">
+      <thead>
+        <tr id="trtr">
+          <th>Time</th>
+          <th>IP</th>
+          <th>Device</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!--workhistory-->
+<div>
+  <button id="history2" onclick="toggleWorkHistory()">Work History ▼</button>
+
+  <div id="workHistorySection" style="display:none; margin-top:10px;">
+    <table id="tablecolor" border="1" cellpadding="6">
+      <thead>
+        <tr id="trtr">
+          <th>Date</th>
+          <th>Hours Worked</th>
+        </tr>
+      </thead>
+      <tbody id="workHistoryTable"></tbody>
+    </table>
+  </div>
+</div>
+
     <button id="deleteAccountBtn" style="background:gold;color:red;">
         Delete Your Account
     </button>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login History</title>
+</head>
+<body>
+
+<h2>Login History</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>IP</th>
+      <th>Device</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="historyTable"></tbody>
+</table>
+
+<script>
+fetch('/api/login-history/', {
+  headers: {
+    'Authorization': 'Token YOUR_TOKEN'
+  }
+})
+.then(res => res.json())
+.then(data => {
+  const table = document.getElementById('historyTable');
+
+  data.forEach(log => {
+    table.innerHTML += `
+      <tr>
+        <td>${log.time}</td>
+        <td>${log.ip}</td>
+        <td>${log.device}</td>
+        <td>${log.status}</td>
+      </tr>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>

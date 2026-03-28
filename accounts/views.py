@@ -47,7 +47,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.utils import timezone
 from django.shortcuts import render
-
+from .models import LoginHistory
+from datetime import timedelta
+from django.db.models import Sum
 
 
 from .models import WorkEntry
@@ -66,30 +68,60 @@ class PDFRenderer(BaseRenderer):
 User = get_user_model()
 
 
-
+def get_client_ip(request):
+    x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded:
+        return x_forwarded.split(',')[0]
+    return request.META.get('REMOTE_ADDR')
 
 # Login API
 class LoginView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.id,
-            'username': user.username,
-            'is_admin': user.is_staff
-        })
+        context={'request': request})
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+
+            # Log SUCCESS login
+            LoginHistory.objects.create(
+                user=user,
+                ip_address=get_client_ip(request),
+                user_agent=request.META.get('HTTP_USER_AGENT'),
+                status='SUCCESS'
+            )
+       
+
+            return Response({
+                'token': token.key,
+                'user_id': user.id,
+                'username': user.username,
+                'is_admin': user.is_staff
+            })
+
+        else:
+            #  Log FAILED login
+            LoginHistory.objects.create(
+                user=None,
+                ip_address=get_client_ip(request),
+                user_agent=request.META.get('HTTP_USER_AGENT'),
+                status='FAILED'
+            )
+
+            return Response(
+                {"error": "Invalid credentials"},
+                status=400
+            )
+
 
 # Logout API
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        request.user.auth_token.delete()
-        return Response({"message": "Logged out successfully"})
+            request.user.auth_token.delete()
+            return Response({"message": "Logged out successfully"})
+
 
 # StartStop
 class StartStopView(APIView):
@@ -131,8 +163,54 @@ class StartStopView(APIView):
         else:
             return Response({"error": "Invalid action"}, status=400)
 
+#loginhistory
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def login_history(request):
+    logs = LoginHistory.objects.filter(user=request.user).order_by('-timestamp')
 
+    data = [
+        {
+            "time": log.timestamp,
+            "ip": log.ip_address,
+            "device": log.user_agent,
+            "status": log.status
 
+        }
+        for log in logs
+    ]
+
+    return Response(data)
+
+#workhistory
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def work_history(request):
+    days = int(request.GET.get('days', 7))
+
+    today = timezone.now().date()
+    start_date = today - timedelta(days=days - 1)
+
+    sessions = TimeEntry.objects.filter(
+        user=request.user,
+        start_time__date__gte=start_date,
+        end_time__isnull=False   # ✅ only completed sessions
+    )
+
+    daily = sessions.values('start_time__date') \
+                    .annotate(total_minutes=Sum('duration_minutes')) \
+                    .order_by('-start_time__date')
+
+    data = [
+        {
+            "date": str(d['start_time__date']),
+            "hours": round(d['total_minutes'] / 60, 2) if d['total_minutes'] else 0
+        }
+        for d in daily
+    ]
+
+    return Response(data)
+#todaydashboard
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def today_dashboard(request):
@@ -444,7 +522,7 @@ def reset_page(request):
     return render(request, "accounts/reset.html")
 
 # admin dashboard
-def admin (request):
+def admin(request):
     return render(request, "accounts/admin.html")
 
 #user dashboard
@@ -453,6 +531,10 @@ def user(request):
 
 def home(request):
     return render(request, "accounts/index.html")
+
+def history(request):
+    return render(request, "accounts/dashboard.html")
+    
 
 # At the bottom of accounts/views.py
 @staff_member_required

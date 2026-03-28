@@ -109,6 +109,86 @@ function loadAdminDashboard() {
             });
         }
     });
+    // ✅ ADD LOGIN HISTORY HERE
+    fetch(API + '/login-history/', {
+        headers: {
+            'Authorization': 'Token ' + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById('historyTable');
+        if (!table) return;
+
+        table.innerHTML = "";
+
+        data.forEach(log => {
+            table.innerHTML += `
+                <tr>
+                    <td>${log.time}</td>
+                    <td>${log.ip}</td>
+                    <td>${log.device}</td>
+                    <td>${log.status}</td>
+                </tr>
+            `;
+        });
+    })
+    .catch(() => showStatus("Failed to load login history"));
+
+    fetch(API + '/work-history/?days=7', {
+        headers: {
+            'Authorization': 'Token ' + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById('workHistoryTable');
+        table.innerHTML = "";
+
+        data.forEach(day => {
+            table.innerHTML += `
+                <tr>
+                    <td>${day.date}</td>
+                    <td>${day.hours} hrs</td>
+                </tr>
+            `;
+        });
+    })
+    .catch(() => showStatus("Failed to load work history"));
+}
+
+function toggleLoginHistory() {
+    const section = document.getElementById("loginHistorySection");
+    const btn = event.target;
+
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        btn.innerText = "Login History ▲";
+
+        if (!historyLoaded) {
+            loadLoginHistory();
+            historyLoaded = true;
+        }
+    } else {
+        section.style.display = "none";
+        btn.innerText = "Login History ▼";
+    }
+}
+
+function toggleWorkHistory() {
+    const section = document.getElementById("workHistorySection");
+    const btn = event.target;
+
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        btn.innerText = "Work History ▲";
+
+        loadWorkHistory(); // always load fresh
+    } else {
+        section.style.display = "none";
+        btn.innerText = "Work History ▼";
+    }
+
 }
 
 // Payroll PDF

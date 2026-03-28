@@ -15,6 +15,8 @@ from .views import reset_password
 from .views import forgot_page
 from . import views
 from .views import admin, user, home
+from .views import login_history
+from .views import work_history
 
 
 urlpatterns = [
@@ -36,6 +38,8 @@ urlpatterns = [
     path('admin/', admin),
     path('user/', user),
     path('home/', home),
+    path('login-history/', login_history),
+    path('work-history/', work_history)
 ]
 
 

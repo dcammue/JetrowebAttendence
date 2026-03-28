@@ -101,6 +101,30 @@ p, a{
     font-size: medium;
 }
 
+#history{
+    background-color: gold;
+    font-size: larger;
+}
+
+#history2{
+    background-color: goldenrod;
+    font-size: larger;
+}
+
+#tablecolor{
+    color: black;
+    font-size: larger;
+}
+
+#trtr{
+    color: gold;
+}
+
+#loginHistorySection{
+    color: orange;
+}
+
+
 #month {
     color: black;
     font-size: medium;
