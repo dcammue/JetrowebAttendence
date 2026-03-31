@@ -76,7 +76,7 @@ Jetro Web Development Attendence application
 
 # 8. you can also access the Admin Dashboard
 
-  credentials: Username: dcammue Password: daniel0775123
+  credentials: Username: dcammue Password: daniel07751
   
   #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into application. 
   
