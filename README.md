@@ -11,7 +11,7 @@ Jetro Web Development Attendence application
 
 ### very nice features that has been explained in the below instructions.
 
-#### the project will be hosted for internet access any moment from now, but it can be run on your local machine for tesing.
+#### The project will be hosted for internet access any moment from now, but it can be run on your local machine for tesing.
 
 ## How to get the project running on your local machine?
 
@@ -76,9 +76,9 @@ Jetro Web Development Attendence application
 
 # 8. you can also access the Admin Dashboard
 
-  credentials: Username: dcammue Password: daniel0775123
+  credentials: Username: dcammue Password: daniel07751
   
-  #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into application. 
+  #### The Admin Dashboard is designed to allows admin to monetor the work sessions of every worker logged into the application. 
   
   ### The admin dashboard contain; today's dashboard, all user dashboard, start and stop buttons, monthly pdf generate session.
 
