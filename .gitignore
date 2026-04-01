@@ -13,3 +13,4 @@ db.sqlite3
 
 # Logs
 *.log
+db.sqlite3
