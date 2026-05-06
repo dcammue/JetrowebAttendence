@@ -50,7 +50,7 @@ from django.shortcuts import render
 from .models import LoginHistory
 from datetime import timedelta
 from django.db.models import Sum
-
+from calendar import monthrange
 
 from .models import WorkEntry
 
@@ -113,7 +113,7 @@ class LoginView(ObtainAuthToken):
                 status=400
             )
 
-
+ 
 # Logout API
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -186,15 +186,20 @@ def login_history(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def work_history(request):
-    days = int(request.GET.get('days', 7))
-
     today = timezone.now().date()
-    start_date = today - timedelta(days=days - 1)
+
+    # 📅 Start of current month
+    start_date = today.replace(day=1)
+
+    # 📅 End of current month
+    last_day = monthrange(today.year, today.month)[1]
+    end_date = today.replace(day=last_day)
 
     sessions = TimeEntry.objects.filter(
         user=request.user,
         start_time__date__gte=start_date,
-        end_time__isnull=False   # ✅ only completed sessions
+        start_time__date__lte=end_date,
+        end_time__isnull=False
     )
 
     daily = sessions.values('start_time__date') \
@@ -210,6 +215,7 @@ def work_history(request):
     ]
 
     return Response(data)
+
 #todaydashboard
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

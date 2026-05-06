@@ -59,6 +59,9 @@ function loadAdminDashboard() {
         // Update date
         document.getElementById("date").innerText = `Date: ${data.date}`;
 
+        // Show welcome message
+        document.getElementById("welcome").innerText = `Welcome ${data.username}`;
+
         // Update total time
         document.getElementById("totalTime").innerText = `Total hours: ${data.total_hours}`;
 
