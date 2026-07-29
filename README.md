@@ -51,7 +51,7 @@ Jetro Web Development Attendence application
 
   pip install -r requirement.txt
 
-# 5. After the 'requirement.txt is install successfully, run or start the server
+# 5. After the 'requirements.txt is install successfully, run or start the server
 
   python3 manage.py runserver
 
