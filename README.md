@@ -49,7 +49,7 @@ Jetro Web Development Attendence application
 
   After installing pip, do this to install the django dependences;
 
-  pip install -r requirement.txt
+  pip install -r requirements.txt
 
 # 5. After the 'requirements.txt is install successfully, run or start the server
 
