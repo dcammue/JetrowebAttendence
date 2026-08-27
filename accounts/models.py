@@ -24,6 +24,7 @@ class TimeEntry(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.start_time.strftime('%Y-%m-%d %H:%M')}"
 
+
 class MonthlySummary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     month = models.DateField()  # store as first day of month: 2026-01-01

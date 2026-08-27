@@ -51,7 +51,7 @@ from .models import LoginHistory
 from datetime import timedelta
 from django.db.models import Sum
 from calendar import monthrange
-
+from datetime import datetime, time, timedelta
 from .models import WorkEntry
 
 class PDFRenderer(BaseRenderer):
@@ -132,11 +132,50 @@ class StartStopView(APIView):
         user = request.user
 
         if action == "start":
-            # Check if a session is already running
-            if TimeEntry.objects.filter(user=user, end_time__isnull=True).exists():
-                return Response({"error": "Session already running"}, status=400)
 
-            entry = TimeEntry.objects.create(user=user, start_time=timezone.now())
+            # Find an existing open session
+            active_entry = TimeEntry.objects.filter(
+                user=user,
+                end_time__isnull=True
+            ).order_by("-start_time").first()
+
+            if active_entry:
+
+                # Determine the date on which the session started
+                start_local = timezone.localtime(active_entry.start_time)
+                today = timezone.localdate()
+
+                # If the session is from a previous day,
+                # automatically close it at midnight.
+                if start_local.date() < today:
+
+                    midnight = datetime.combine(
+                        start_local.date() + timedelta(days=1),
+                        time.min
+                    )
+
+                    # Make midnight timezone-aware
+                    midnight = timezone.make_aware(
+                        midnight,
+                        timezone.get_current_timezone()
+                    )
+
+                    active_entry.end_time = midnight
+                    active_entry.save()
+
+                else:
+                    # Session is still active today
+                    return Response(
+                        {"error": "Session already running"},
+                        status=400
+                    )
+
+            # No active session remains, so start a new one
+            entry = TimeEntry.objects.create(
+                user=user,
+                start_time=timezone.now()
+            )
+
             return Response({
                 "message": "Work started",
                 "entry_id": entry.id,
@@ -144,14 +183,24 @@ class StartStopView(APIView):
             })
 
         elif action == "stop":
-            # Get the last uncompleted TimeEntry
-            try:
-                entry = TimeEntry.objects.filter(user=user, end_time__isnull=True).latest('start_time')
-            except TimeEntry.DoesNotExist:
-                return Response({"error": "No active work session"}, status=400)
 
+            # Get the current active session
+            try:
+                entry = TimeEntry.objects.filter(
+                    user=user,
+                    end_time__isnull=True
+                ).latest("start_time")
+
+            except TimeEntry.DoesNotExist:
+                return Response(
+                    {"error": "No active work session"},
+                    status=400
+                )
+
+            # Stop the session normally
             entry.end_time = timezone.now()
             entry.save()
+
             return Response({
                 "message": "Work stopped",
                 "entry_id": entry.id,
@@ -161,7 +210,15 @@ class StartStopView(APIView):
             })
 
         else:
-            return Response({"error": "Invalid action"}, status=400)
+            return Response(
+                {"error": "Invalid action"},
+                status=400
+            )
+
+
+
+
+
 
 #loginhistory
 @api_view(['GET'])
